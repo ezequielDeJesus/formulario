@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Usuários: Apenas o próprio usuário pode ler/escrever seus dados
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Formulários: 
+    // - Qualquer pessoa pode ler (para preencher o formulário público)
+    // - Apenas o dono pode criar/editar
+    match /forms/{formId} {
+      allow read: if true; 
+      allow write: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+    
+    // Leads:
+    // - Qualquer pessoa pode criar (ao enviar o formulário)
+    // - Apenas o dono do formulário pode ler
+    match /leads/{leadId} {
+      allow create: if true;
+      allow read, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow update: if false; // Respostas não devem ser editadas
+    }
+  }
+}
