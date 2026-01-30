@@ -10,8 +10,15 @@ const genAI = new GoogleGenerativeAI(apiKey || "");
 console.log("--- Gemini Service: Versão Estável v1 ---");
 
 // Modelos estáveis e amplamente disponíveis
-// Modelos em ordem de tentativa. O 'gemini-pro' é a versão 1.0, mais estável para algumas chaves.
-const STABLE_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
+// Modelos em ordem de tentativa. 
+// Coloquei o 'gemini-pro' (1.0) primeiro por ser o mais compatível com todas as chaves.
+const STABLE_MODELS = ["gemini-pro", "gemini-1.5-flash", "gemini-1.5-pro"];
+
+// LOG DE DEBUG PARA A CHAVE (Apenas tamanho e prefixo para segurança)
+console.log("--- DEBUG API KEY ---");
+console.log("Tamanho da chave:", apiKey?.length);
+console.log("Começa com AIza:", apiKey?.startsWith("AIza"));
+console.log("----------------------");
 
 const cleanAIResponse = (text: string) => {
   try {
