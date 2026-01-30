@@ -2,13 +2,15 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Question } from "../types";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-// Log útil para o desenvolvedor verificar no console do navegador
 console.log("Gemini API Key:", apiKey ? "Configurada corretamente" : "NÃO ENCONTRADA");
 
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
+// Identificador único para verificar se a nova versão foi carregada
+console.log("--- Gemini Service: Versão Estável v1 ---");
+
 // Modelos estáveis e amplamente disponíveis
-// Modelos prioritários (tentaremos o mais leve primeiro para velocidade)
+// Modelos estáveis e amplamente disponíveis
 const STABLE_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro"];
 
 const cleanAIResponse = (text: string) => {
