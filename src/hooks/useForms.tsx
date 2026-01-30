@@ -38,8 +38,8 @@ export const useForms = () => {
             const forms = querySnapshot.docs.map(doc => {
                 const data = doc.data();
                 return {
-                    id: doc.id,
                     ...data,
+                    id: doc.id,
                     questions: data.questions || [],
                     products: data.products || []
                 };
@@ -68,8 +68,8 @@ export const useForms = () => {
             const data = doc.data();
             console.log("Formulário encontrado:", doc.id, "Total de perguntas:", data.questions?.length);
             return {
-                id: doc.id,
                 ...data,
+                id: doc.id,
                 questions: data.questions || [],
                 products: data.products || []
             } as FormConfig;
@@ -94,8 +94,8 @@ export const useForms = () => {
                     pCount: data.products?.length || 0
                 });
                 return {
-                    id: docSnap.id,
                     ...data,
+                    id: docSnap.id,
                     questions: data.questions || [],
                     products: data.products || []
                 } as FormConfig;
@@ -121,7 +121,7 @@ export const useForms = () => {
                 qCount: formData.questions?.length || 0
             });
 
-            const dataToSave = {
+            const { id: _, ...dataToSave } = {
                 ...formData,
                 userId: user.uid,
                 updatedAt: serverTimestamp(),
@@ -129,9 +129,8 @@ export const useForms = () => {
 
             if (formData.id) {
                 const docRef = doc(db, 'forms', formData.id);
-                const { id, ...dataWithoutId } = dataToSave;
                 console.log("saveForm: Atualizando documento existente...");
-                await updateDoc(docRef, dataWithoutId);
+                await updateDoc(docRef, dataToSave);
                 console.log("saveForm: Atualização concluída.");
                 return formData.id;
             } else {
