@@ -10,16 +10,17 @@ const genAI = new GoogleGenerativeAI(apiKey || "");
 console.log("--- Gemini Service: Versão Estável v1 ---");
 
 // Modelos estáveis e amplamente disponíveis
-// Modelos estáveis e amplamente disponíveis
-const STABLE_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro"];
+// Modelos em ordem de tentativa. O 'gemini-pro' é a versão 1.0, mais estável para algumas chaves.
+const STABLE_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
 
 const cleanAIResponse = (text: string) => {
   try {
+    // Tenta encontrar um JSON [] ou {} no meio do texto
     const jsonMatch = text.match(/\[[\s\S]*\]/) || text.match(/\{[\s\S]*\}/);
     const cleaned = jsonMatch ? jsonMatch[0] : text;
     return JSON.parse(cleaned);
   } catch (e) {
-    console.error("Erro ao processar resposta da IA:", text);
+    console.error("Erro ao processar resposta da IA. Texto recebido:", text);
     throw new Error("A IA retornou um formato inválido. Tente novamente.");
   }
 };
@@ -33,9 +34,9 @@ export const generateQuestionsFromPrompt = async (prompt: string): Promise<Parti
 
   for (const modelName of STABLE_MODELS) {
     try {
-      console.log(`Solicitando perguntas ao modelo: ${modelName} (v1)`);
-      // Forçamos a versão v1 para garantir compatibilidade estável
-      const model = genAI.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
+      console.log(`Tentando modelo: ${modelName}`);
+      // Removemos o 'apiVersion' fixo para deixar o SDK decidir a melhor rota
+      const model = genAI.getGenerativeModel({ model: modelName });
 
       const result = await model.generateContent({
         contents: [{
@@ -88,8 +89,8 @@ export const generateLeadResponse = async (
 
   for (const modelName of STABLE_MODELS) {
     try {
-      console.log(`Gerando resposta do Lead com modelo: ${modelName} (v1)`);
-      const model = genAI.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
+      console.log(`Gerando análise com modelo: ${modelName}`);
+      const model = genAI.getGenerativeModel({ model: modelName });
       const result = await model.generateContent(prompt);
       const response = await result.response;
       return response.text();
