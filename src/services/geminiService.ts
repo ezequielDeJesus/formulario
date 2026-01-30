@@ -2,15 +2,16 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Question } from "../types";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-console.log("Gemini API Key configurada:", apiKey ? `Sim (Iniciando com ${apiKey.substring(0, 6)}...)` : "Não");
+// Log útil para o desenvolvedor verificar no console do navegador
+console.log("Gemini API Key:", apiKey ? "Configurada corretamente" : "NÃO ENCONTRADA");
+
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
-// Modelos estáveis em ordem de prioridade
-const STABLE_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-exp"];
+// Modelos estáveis e amplamente disponíveis
+const STABLE_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"];
 
 const cleanAIResponse = (text: string) => {
   try {
-    // Tenta extrair JSON de blocos de código markdown ou texto puro
     const jsonMatch = text.match(/\[[\s\S]*\]/) || text.match(/\{[\s\S]*\}/);
     const cleaned = jsonMatch ? jsonMatch[0] : text;
     return JSON.parse(cleaned);
@@ -22,14 +23,14 @@ const cleanAIResponse = (text: string) => {
 
 export const generateQuestionsFromPrompt = async (prompt: string): Promise<Partial<Question>[]> => {
   if (!apiKey || apiKey === "PLACEHOLDER_API_KEY") {
-    throw new Error("API Key do Gemini não configurada.");
+    throw new Error("Chave de API (VITE_GEMINI_API_KEY) não encontrada nas configurações.");
   }
 
-  let lastError: any = null;
+  let errors: string[] = [];
 
   for (const modelName of STABLE_MODELS) {
     try {
-      console.log(`Tentando conectar com o modelo: ${modelName}`);
+      console.log(`Solicitando perguntas ao modelo: ${modelName}`);
       const model = genAI.getGenerativeModel({ model: modelName });
 
       const result = await model.generateContent({
@@ -49,16 +50,15 @@ export const generateQuestionsFromPrompt = async (prompt: string): Promise<Parti
       const response = await result.response;
       return cleanAIResponse(response.text());
     } catch (error: any) {
-      console.error(`Falha no modelo ${modelName}:`, error.message);
-      lastError = error;
+      console.warn(`Modelo ${modelName} falhou:`, error.message);
+      errors.push(`${modelName}: ${error.message}`);
 
-      if (error.message?.includes("429") || error.message?.includes("403")) {
-        break; // Erro de cota ou chave inválida
-      }
+      // Se for erro de quota (429) ou chave (403), não adianta tentar outros
+      if (error.message?.includes("429") || error.message?.includes("403")) break;
     }
   }
 
-  throw new Error(lastError?.message || "Erro de conexão com o Google AI. Verifique sua chave.");
+  throw new Error(`Não foi possível conectar com a IA. Detalhes:\n${errors.join('\n')}`);
 };
 
 export const generateLeadResponse = async (
@@ -84,16 +84,15 @@ export const generateLeadResponse = async (
 
   for (const modelName of STABLE_MODELS) {
     try {
-      console.log(`Tentando análise com o modelo: ${modelName}`);
       const model = genAI.getGenerativeModel({ model: modelName });
       const result = await model.generateContent(prompt);
       const response = await result.response;
       return response.text();
     } catch (error: any) {
-      console.error(`Erro na análise (modelo ${modelName}):`, error.message);
+      console.error(`Erro na análise (${modelName}):`, error.message);
       if (error.message?.includes("429") || error.message?.includes("403")) break;
     }
   }
 
-  return "Obrigado por enviar suas respostas. Sua análise está sendo processada por um especialista e entraremos em contato.";
+  return "Obrigado por enviar suas respostas. Sua análise está em processamento.";
 };
