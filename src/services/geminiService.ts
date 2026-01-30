@@ -8,7 +8,8 @@ console.log("Gemini API Key:", apiKey ? "Configurada corretamente" : "NÃO ENCON
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
 // Modelos estáveis e amplamente disponíveis
-const STABLE_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"];
+// Modelos prioritários (tentaremos o mais leve primeiro para velocidade)
+const STABLE_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro"];
 
 const cleanAIResponse = (text: string) => {
   try {
@@ -30,8 +31,9 @@ export const generateQuestionsFromPrompt = async (prompt: string): Promise<Parti
 
   for (const modelName of STABLE_MODELS) {
     try {
-      console.log(`Solicitando perguntas ao modelo: ${modelName}`);
-      const model = genAI.getGenerativeModel({ model: modelName });
+      console.log(`Solicitando perguntas ao modelo: ${modelName} (v1)`);
+      // Forçamos a versão v1 para garantir compatibilidade estável
+      const model = genAI.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
 
       const result = await model.generateContent({
         contents: [{
@@ -84,7 +86,8 @@ export const generateLeadResponse = async (
 
   for (const modelName of STABLE_MODELS) {
     try {
-      const model = genAI.getGenerativeModel({ model: modelName });
+      console.log(`Gerando resposta do Lead com modelo: ${modelName} (v1)`);
+      const model = genAI.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
       const result = await model.generateContent(prompt);
       const response = await result.response;
       return response.text();
