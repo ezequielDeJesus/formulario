@@ -22,9 +22,13 @@ export const useForms = () => {
     const [error, setError] = useState<string | null>(null);
 
     const getForms = useCallback(async () => {
-        if (!user) return [];
+        if (!user) {
+            console.warn("getForms: Usuário não autenticado");
+            return [];
+        }
         setLoading(true);
         try {
+            console.log("getForms: Iniciando busca para o usuário:", user.uid);
             const q = query(
                 collection(db, 'forms'),
                 where('userId', '==', user.uid),
@@ -40,8 +44,10 @@ export const useForms = () => {
                     products: data.products || []
                 };
             }) as FormConfig[];
+            console.log("getForms: Sucesso! Encontrados:", forms.length);
             return forms;
         } catch (err: any) {
+            console.error("getForms: Erro na consulta Firestore:", err.message);
             setError(err.message);
             return [];
         } finally {
@@ -74,11 +80,19 @@ export const useForms = () => {
     };
 
     const getFormById = async (id: string) => {
+        setLoading(true);
         try {
+            console.log("getFormById: Buscando ID:", id);
             const docRef = doc(db, 'forms', id);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
                 const data = docSnap.data();
+                console.log("getFormById: Encontrado!", {
+                    id: docSnap.id,
+                    nome: data.name,
+                    qCount: data.questions?.length || 0,
+                    pCount: data.products?.length || 0
+                });
                 return {
                     id: docSnap.id,
                     ...data,
@@ -86,10 +100,14 @@ export const useForms = () => {
                     products: data.products || []
                 } as FormConfig;
             }
+            console.warn("getFormById: Documento não existe:", id);
             return null;
         } catch (err: any) {
+            console.error("getFormById: Erro:", err.message);
             setError(err.message);
             return null;
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -97,6 +115,12 @@ export const useForms = () => {
         if (!user) throw new Error("Usuário não autenticado");
         setLoading(true);
         try {
+            console.log("saveForm: Preparando para salvar...", {
+                id: formData.id || "NOVO",
+                nome: formData.name,
+                qCount: formData.questions?.length || 0
+            });
+
             const dataToSave = {
                 ...formData,
                 userId: user.uid,
@@ -106,16 +130,21 @@ export const useForms = () => {
             if (formData.id) {
                 const docRef = doc(db, 'forms', formData.id);
                 const { id, ...dataWithoutId } = dataToSave;
+                console.log("saveForm: Atualizando documento existente...");
                 await updateDoc(docRef, dataWithoutId);
+                console.log("saveForm: Atualização concluída.");
                 return formData.id;
             } else {
+                console.log("saveForm: Criando novo documento...");
                 const docRef = await addDoc(collection(db, 'forms'), {
                     ...dataToSave,
                     createdAt: serverTimestamp()
                 });
+                console.log("saveForm: Criação concluída. ID:", docRef.id);
                 return docRef.id;
             }
         } catch (err: any) {
+            console.error("saveForm: Erro ao salvar no Firebase:", err.message);
             setError(err.message);
             throw err;
         } finally {

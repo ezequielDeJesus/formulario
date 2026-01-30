@@ -17,7 +17,7 @@ import Button from '../components/Button';
 import Card from '../components/Card';
 
 const AdminDashboard: React.FC = () => {
-  const { getForms, deleteForm, loading: formsLoading } = useForms();
+  const { getForms, deleteForm, loading: formsLoading, error: formsError } = useForms();
   const [forms, setForms] = useState<FormConfig[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -29,8 +29,10 @@ const AdminDashboard: React.FC = () => {
 
   const fetchForms = async () => {
     setLoading(true);
+    console.log("Dashboard: Buscando formulários...");
     const data = await getForms();
     if (data) {
+      console.log("Dashboard: Formulários recebidos:", data.length);
       setForms(data);
     }
     setLoading(false);
@@ -71,6 +73,16 @@ const AdminDashboard: React.FC = () => {
           </Button>
         </Link>
       </div>
+
+      {formsError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-3">
+          <XCircle size={20} />
+          <div>
+            <p className="font-bold">Erro ao carregar dados:</p>
+            <p className="text-sm">{formsError}</p>
+          </div>
+        </div>
+      )}
 
       <Card padding="none">
         <div className="p-4 border-b dark:border-gray-800">
