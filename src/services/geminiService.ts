@@ -7,15 +7,13 @@ console.log("Gemini API Key:", apiKey ? "Configurada corretamente" : "NÃO ENCON
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
 // Identificador único para verificar se a nova versão foi carregada
-console.log("--- Gemini Service: Versão Estável v1 ---");
+console.log("--- Gemini Service: Versão Estável v4.0 (CACHE BUSTER) ---");
 
 // Modelos estáveis e amplamente disponíveis
 // Modelos em ordem de tentativa. 
-// Coloquei o 'gemini-pro' (1.0) primeiro por ser o mais compatível com todas as chaves.
 const STABLE_MODELS = [
   "gemini-1.5-flash",
   "gemini-1.5-flash-latest",
-  "gemini-1.0-pro",
   "gemini-1.5-pro-latest"
 ];
 
@@ -73,7 +71,8 @@ export const generateLeadResponse = async (
   return `
 # Obrigado pelas respostas!
 
-**Diagnóstico Técnico (DEBUG - v3 - ${buildDate}):**
+**Diagnóstico Técnico (DEBUG - v4.0 - ${buildDate})**
+**(Se você ver 'gemini-pro' abaixo, limpe o cache!)**
 \`\`\`
 Status da Chave API: ${apiKeyStatus}
 Erros por Modelo:
