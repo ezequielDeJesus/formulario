@@ -96,7 +96,7 @@ const LeadsList: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Leads Coletados</h1>
-          <p className="text-gray-500 dark:text-gray-400">Dados persistidos no Supabase</p>
+          <p className="text-gray-500 dark:text-gray-400">Dados persistidos no Firebase</p>
         </div>
         <Button
           onClick={exportCSV}

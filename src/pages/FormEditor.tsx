@@ -56,9 +56,10 @@ const FormEditor: React.FC = () => {
     const formData = await getFormById(id);
 
     if (formData) {
+      console.log("Formulário carregado com sucesso:", formData.id, "Perguntas:", formData.questions?.length);
       setForm(formData);
     } else {
-      console.error("Erro ao carregar formulário");
+      console.error("Erro ao carregar formulário: não encontrado.");
     }
     setLoading(false);
   };

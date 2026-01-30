@@ -63,7 +63,7 @@ const AdminDashboard: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Meus Formulários</h1>
-          <p className="text-gray-500 dark:text-gray-400">Gerencie seus fluxos de captura no Supabase</p>
+          <p className="text-gray-500 dark:text-gray-400">Gerencie seus fluxos de captura no Firebase</p>
         </div>
         <Link to="/admin/formularios/novo">
           <Button icon={<Plus size={20} />}>

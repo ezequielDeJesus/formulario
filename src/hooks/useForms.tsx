@@ -31,10 +31,15 @@ export const useForms = () => {
                 orderBy('createdAt', 'desc')
             );
             const querySnapshot = await getDocs(q);
-            const forms = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            })) as FormConfig[];
+            const forms = querySnapshot.docs.map(doc => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    questions: data.questions || [],
+                    products: data.products || []
+                };
+            }) as FormConfig[];
             return forms;
         } catch (err: any) {
             setError(err.message);
@@ -50,7 +55,13 @@ export const useForms = () => {
             const querySnapshot = await getDocs(q);
             if (querySnapshot.empty) return null;
             const doc = querySnapshot.docs[0];
-            return { id: doc.id, ...doc.data() } as FormConfig;
+            const data = doc.data();
+            return {
+                id: doc.id,
+                ...data,
+                questions: data.questions || [],
+                products: data.products || []
+            } as FormConfig;
         } catch (err: any) {
             setError(err.message);
             return null;
@@ -62,7 +73,13 @@ export const useForms = () => {
             const docRef = doc(db, 'forms', id);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-                return { id: docSnap.id, ...docSnap.data() } as FormConfig;
+                const data = docSnap.data();
+                return {
+                    id: docSnap.id,
+                    ...data,
+                    questions: data.questions || [],
+                    products: data.products || []
+                } as FormConfig;
             }
             return null;
         } catch (err: any) {
