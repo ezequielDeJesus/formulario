@@ -124,30 +124,37 @@ const PublicFormView: React.FC = () => {
   const handleSubmit = async () => {
     if (!form) return;
     setIsSubmitting(true);
+    console.log("Iniciando submissão do formulário...", { formId: form.id });
+
     try {
+      console.log("Solicitando resposta à IA...");
       const aiResponse = await generateLeadResponse(form.aiResponsePrompt, answers, form.questions);
+      console.log("Resposta da IA recebida (tamanho):", aiResponse.length);
       setAiResult(aiResponse);
 
       const emailField = form.questions.find(q => q.type === 'email');
       const phoneField = form.questions.find(q => q.type === 'phone');
       const nameField = form.questions.find(q => (q.label || '').toLowerCase().includes('nome'));
 
+      console.log("Salvando Lead no Firestore...");
       await saveLead({
         formId: form.id,
         formName: form.name,
         answers: answers,
         aiResponse: aiResponse,
-        userId: form.userId || '', // Associamos ao dono do formulário para segurança
+        userId: form.userId || '',
         contactInfo: {
           name: nameField ? answers[nameField.id] : 'Lead Anônimo',
           email: emailField ? answers[emailField.id] : undefined,
           phone: phoneField ? answers[phoneField.id] : undefined,
         }
       });
+      console.log("Lead salvo com sucesso.");
 
       setShowIntermediate(true);
-    } catch (err) {
-      alert('Erro ao enviar respostas.');
+    } catch (err: any) {
+      console.error("Erro crítico na submissão:", err);
+      alert(`Erro ao enviar respostas: ${err.message || 'Erro desconhecido'}`);
     } finally {
       setIsSubmitting(false);
     }
