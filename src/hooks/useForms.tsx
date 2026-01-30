@@ -51,11 +51,16 @@ export const useForms = () => {
 
     const getFormBySlug = async (slug: string) => {
         try {
+            console.log("Buscando formulário pelo slug:", slug);
             const q = query(collection(db, 'forms'), where('slug', '==', slug));
             const querySnapshot = await getDocs(q);
-            if (querySnapshot.empty) return null;
+            if (querySnapshot.empty) {
+                console.warn("Nenhum formulário encontrado com slug:", slug);
+                return null;
+            }
             const doc = querySnapshot.docs[0];
             const data = doc.data();
+            console.log("Formulário encontrado:", doc.id, "Total de perguntas:", data.questions?.length);
             return {
                 id: doc.id,
                 ...data,
