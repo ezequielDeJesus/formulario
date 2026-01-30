@@ -96,6 +96,8 @@ export const generateLeadResponse = async (
     Foque em como os problemas dele podem ser resolvidos. Mantenha um tom encorajador e especialista.
   `;
 
+  let errors: string[] = [];
+
   for (const modelName of STABLE_MODELS) {
     try {
       console.log(`[IA] Gerando análise com modelo: ${modelName} na rota V1`);
@@ -111,14 +113,24 @@ export const generateLeadResponse = async (
       if (text) return text;
     } catch (error: any) {
       console.error(`Erro na análise (${modelName}):`, error.message);
+      errors.push(`${modelName}: ${error.message}`);
       // Se for erro de quota ou permissão, para o loop. 
       if (error.message?.includes("429") || error.message?.includes("403")) break;
     }
   }
 
-  console.error("Falha em todos os modelos de IA para gerar análise.");
+  console.error("Falha em todos os modelos de IA para gerar análise.", errors);
+
+  // DEBUG: Mostrando o erro técnico na tela para o usuário nos mandar o print
+  const debugError = errors.join('\n');
+
   return `
 # Obrigado pelas respostas!
+
+**Diagnóstico Técnico (DEBUG):**
+\`\`\`
+${debugError}
+\`\`\`
 
 Infelizmente nossa inteligência artificial está sobrecarregada no momento e não conseguiu gerar sua análise personalizada agora.
 
