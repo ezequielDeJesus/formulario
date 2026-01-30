@@ -43,7 +43,7 @@ const BrandingTab: React.FC<BrandingTabProps> = ({ form, setForm, handleFileUplo
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-gray-500 uppercase">Nome</label>
+                        <label className="text-xs font-bold text-gray-500 uppercase">Nome <span className="text-red-500">*</span></label>
                         <input
                             type="text"
                             value={form.name}
@@ -53,7 +53,7 @@ const BrandingTab: React.FC<BrandingTabProps> = ({ form, setForm, handleFileUplo
                         />
                     </div>
                     <div className="space-y-1">
-                        <label className="text-xs font-bold text-gray-500 uppercase">URL (Slug)</label>
+                        <label className="text-xs font-bold text-gray-500 uppercase">URL (Slug) <span className="text-red-500">*</span></label>
                         <div className="flex items-center">
                             <span className="bg-gray-50 dark:bg-gray-800 border dark:border-gray-700 border-r-0 px-3 py-2 rounded-l-lg text-gray-400 text-sm">/f/</span>
                             <input
