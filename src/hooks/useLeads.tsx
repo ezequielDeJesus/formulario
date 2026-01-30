@@ -23,17 +23,17 @@ export const useLeads = () => {
         try {
             const q = query(
                 collection(db, 'leads'),
-                where('userId', '==', user.uid),
-                orderBy('timestamp', 'desc')
+                where('userId', '==', user.uid)
             );
             const querySnapshot = await getDocs(q);
             const leads = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
-                // Convert Firestore timestamp to number for the UI if needed
                 timestamp: doc.data().timestamp?.toMillis?.() || Date.now()
             })) as Lead[];
-            return leads;
+
+            // Client-side sort to avoid missing index error
+            return leads.sort((a, b) => b.timestamp - a.timestamp);
         } catch (err: any) {
             setError(err.message);
             return [];

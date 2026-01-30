@@ -19,7 +19,7 @@ import Button from '../components/Button';
 import Card from '../components/Card';
 
 const LeadsList: React.FC = () => {
-  const { getLeads } = useLeads();
+  const { getLeads, error: leadsError } = useLeads();
   const { getForms } = useForms();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [forms, setForms] = useState<FormConfig[]>([]);
@@ -130,6 +130,11 @@ const LeadsList: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
+          {leadsError && (
+            <div className="p-4 mb-4 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg mx-4">
+              <strong>Erro ao carregar leads:</strong> {leadsError}
+            </div>
+          )}
           {loading ? (
             <div className="py-20 flex justify-center">
               <Loader2 className="animate-spin text-blue-600" size={40} />
