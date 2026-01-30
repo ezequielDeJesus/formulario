@@ -99,17 +99,33 @@ export const generateLeadResponse = async (
   for (const modelName of STABLE_MODELS) {
     try {
       console.log(`[IA] Gerando análise com modelo: ${modelName} na rota V1`);
-      const model = genAI.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
+      // Removida a forçação de apiVersion 'v1' para deixar a lib decidir ou usar o padrão,
+      // pois às vezes 'v1' pode não ter o modelo mais novo disponível.
+      // Se der erro, tentamos o próximo.
+      const model = genAI.getGenerativeModel({ model: modelName });
+
       const result = await model.generateContent(prompt);
       const response = await result.response;
-      return response.text();
+      const text = response.text();
+
+      if (text) return text;
     } catch (error: any) {
       console.error(`Erro na análise (${modelName}):`, error.message);
       // Se for erro de quota ou permissão, para o loop. 
-      // Se for 404, o loop continua para o próximo modelo.
       if (error.message?.includes("429") || error.message?.includes("403")) break;
     }
   }
 
-  return "Obrigado por enviar suas respostas. Sua análise está em processamento.";
+  console.error("Falha em todos os modelos de IA para gerar análise.");
+  return `
+# Obrigado pelas respostas!
+
+Infelizmente nossa inteligência artificial está sobrecarregada no momento e não conseguiu gerar sua análise personalizada agora.
+
+**Mas não se preocupe!**
+Nossa equipe de especialistas já recebeu seus dados:
+${questions.map(q => `- **${q.label}**: ${answers[q.id] || 'N/A'}`).join('\n')}
+
+Entraremos em contato em breve para discutir seu plano de ação.
+  `;
 };
