@@ -52,16 +52,30 @@ const FormEditor: React.FC = () => {
   }, [id]);
 
   const loadFormData = async () => {
-    if (!id) return;
-    const formData = await getFormById(id);
-
-    if (formData) {
-      console.log("Formulário carregado com sucesso:", formData.id, "Perguntas:", formData.questions?.length);
-      setForm(formData);
-    } else {
-      console.error("Erro ao carregar formulário: não encontrado.");
+    try {
+      const formData = await getFormById(id);
+      if (formData) {
+        console.log("FormEditor: Dados carregados com sucesso!", {
+          id: formData.id,
+          nome: formData.name,
+          perguntas: formData.questions?.length || 0
+        });
+        setForm({
+          ...formData,
+          questions: formData.questions || [],
+          products: formData.products || []
+        });
+      } else {
+        console.error("FormEditor: Formulário não encontrado no Firebase.");
+        alert("Erro: Formulário não encontrado.");
+        navigate('/admin');
+      }
+    } catch (err: any) {
+      console.error("FormEditor: Erro crítico ao carregar dados:", err.message);
+      alert("Erro ao carregar formulário: " + err.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
@@ -224,7 +238,7 @@ const FormEditor: React.FC = () => {
         </div>
 
         <div className="md:col-span-3 space-y-6">
-          {activeTab === 'branding' && (
+          {activeTab === 'branding' && form && (
             <BrandingTab
               form={form}
               setForm={setForm}
@@ -232,7 +246,7 @@ const FormEditor: React.FC = () => {
             />
           )}
 
-          {activeTab === 'questions' && (
+          {activeTab === 'questions' && form && (
             <QuestionsTab
               form={form}
               aiPrompt={aiPrompt}
@@ -245,7 +259,7 @@ const FormEditor: React.FC = () => {
             />
           )}
 
-          {activeTab === 'products' && (
+          {activeTab === 'products' && form && (
             <ProductsTab
               form={form}
               setForm={setForm}
@@ -257,7 +271,7 @@ const FormEditor: React.FC = () => {
             />
           )}
 
-          {activeTab === 'logic' && (
+          {activeTab === 'logic' && form && (
             <LogicTab form={form} setForm={setForm} />
           )}
         </div>
