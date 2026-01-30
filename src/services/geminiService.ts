@@ -10,8 +10,9 @@ const genAI = new GoogleGenerativeAI(apiKey || "");
 console.log("--- Gemini Service: Versão Estável v4.0 (CACHE BUSTER) ---");
 
 // Modelos estáveis e amplamente disponíveis
-// Modelos em ordem de tentativa. 
+// Modelos em ordem de tentativa (começando pelo mais compatível)
 const STABLE_MODELS = [
+  "gemini-1.0-pro",
   "gemini-1.5-flash",
   "gemini-1.5-flash-latest",
   "gemini-1.5-pro-latest"

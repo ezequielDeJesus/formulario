@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulary AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .bg-primary {
+      background-color: var(--primary-color, #3b82f6);
+    }
+
+    .text-primary {
+      color: var(--primary-color, #3b82f6);
+    }
+
+    .border-primary {
+      border-color: var(--primary-color, #3b82f6);
+    }
+
+    /* Markdown Styles */
+
+    .markdown-content h1,
+    .markdown-content h2,
+    .markdown-content h3 {
+      font-weight: 800;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      color: #111827;
+    }
+
+    .dark .markdown-content h1,
+    .dark .markdown-content h2,
+    .dark .markdown-content h3 {
+      color: #f9fafb;
+    }
+
+    .markdown-content h2 {
+      font-size: 1.5rem;
+    }
+
+    .markdown-content h3 {
+      font-size: 1.25rem;
+    }
+
+    .markdown-content p {
+      margin-bottom: 1.25rem;
+      line-height: 1.8;
+      color: #374151;
+    }
+
+    .dark .markdown-content p {
+      color: #d1d5db;
+    }
+
+    .markdown-content ul,
+    .markdown-content ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+    }
+
+    .markdown-content ul {
+      list-style-type: disc;
+    }
+
+    .markdown-content ol {
+      list-style-type: decimal;
+    }
+
+    .markdown-content li {
+      margin-bottom: 0.5rem;
+      color: #374151;
+    }
+
+    .dark .markdown-content li {
+      color: #d1d5db;
+    }
+
+    .markdown-content strong {
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .dark .markdown-content strong {
+      color: #ffffff;
+    }
+
+    .markdown-content hr {
+      border: 0;
+      border-top: 1px solid #e5e7eb;
+      margin: 2rem 0;
+    }
+
+    .dark .markdown-content hr {
+      border-color: #374151;
+    }
+
+    .markdown-content blockquote {
+      border-left: 4px solid #e5e7eb;
+      padding-left: 1rem;
+      font-style: italic;
+      color: #6b7280;
+      margin: 1.5rem 0;
+    }
+
+    .dark .markdown-content blockquote {
+      border-color: #4b5563;
+      color: #9ca3af;
+    }
+  </style>
+
+  <link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.36.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
+    "marked": "https://esm.sh/marked@^12.0.0"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-BKzcJo4j.js"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-900 dark:bg-black dark:text-white transition-colors duration-300">
+  <div id="root"></div>
+</body>
+
+</html>
