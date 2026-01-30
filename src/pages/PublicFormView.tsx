@@ -319,8 +319,8 @@ const PublicFormView: React.FC = () => {
         </div>
       </div>
       <div className="mt-8 text-center animate-pulse">
-        <p className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100 font-mono font-bold py-2 px-4 rounded-full inline-block">
-          Versão: 4.0 (FORCE UPDATE)
+        <p className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 font-mono font-bold py-2 px-4 rounded-full inline-block">
+          v5.0 - Modelo Único Estável
         </p>
       </div>
     </div>

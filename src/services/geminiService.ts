@@ -7,16 +7,10 @@ console.log("Gemini API Key:", apiKey ? "Configurada corretamente" : "NÃO ENCON
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
 // Identificador único para verificar se a nova versão foi carregada
-console.log("--- Gemini Service: Versão Estável v4.0 (CACHE BUSTER) ---");
+console.log("--- Gemini Service: v5.0 - APENAS gemini-1.0-pro ---");
 
-// Modelos estáveis e amplamente disponíveis
-// Modelos em ordem de tentativa (começando pelo mais compatível)
-const STABLE_MODELS = [
-  "gemini-1.0-pro",
-  "gemini-1.5-flash",
-  "gemini-1.5-flash-latest",
-  "gemini-1.5-pro-latest"
-];
+// Usando apenas o modelo mais estável e universalmente disponível
+const STABLE_MODELS = ["gemini-1.0-pro"];
 
 const cleanAIResponse = (text: string) => {
   try {
