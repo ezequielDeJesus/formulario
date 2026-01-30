@@ -136,25 +136,30 @@ const PublicFormView: React.FC = () => {
       const phoneField = form.questions.find(q => q.type === 'phone');
       const nameField = form.questions.find(q => (q.label || '').toLowerCase().includes('nome'));
 
-      console.log("Salvando Lead no Firestore...");
-      await saveLead({
+      // Sanitize payload to remove any undefined values
+      const payload = JSON.parse(JSON.stringify({
         formId: form.id,
         formName: form.name,
         answers: answers,
-        aiResponse: aiResponse,
+        aiResponse: aiResponse || '',
         userId: form.userId || '',
         contactInfo: {
-          name: nameField ? answers[nameField.id] : 'Lead Anônimo',
-          email: emailField ? answers[emailField.id] : undefined,
-          phone: phoneField ? answers[phoneField.id] : undefined,
+          name: (nameField && answers[nameField.id]) || 'Lead Anônimo',
+          email: (emailField && answers[emailField.id]) || null,
+          phone: (phoneField && answers[phoneField.id]) || null,
         }
-      });
+      }));
+
+      console.log("Salvando Lead no Firestore with payload:", payload);
+      await saveLead(payload);
       console.log("Lead salvo com sucesso.");
 
       setShowIntermediate(true);
     } catch (err: any) {
       console.error("Erro crítico na submissão:", err);
-      alert(`Erro ao enviar respostas: ${err.message || 'Erro desconhecido'}`);
+      // Detailed error for debugging
+      const errorMessage = err.message || JSON.stringify(err);
+      alert(`Erro ao enviar respostas (v2): ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
