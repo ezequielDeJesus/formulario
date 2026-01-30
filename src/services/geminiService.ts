@@ -41,9 +41,11 @@ export const generateQuestionsFromPrompt = async (prompt: string): Promise<Parti
 
   for (const modelName of STABLE_MODELS) {
     try {
-      console.log(`Tentando modelo: ${modelName}`);
-      // Removemos o 'apiVersion' fixo para deixar o SDK decidir a melhor rota
-      const model = genAI.getGenerativeModel({ model: modelName });
+      console.log(`[IA] Tentando modelo: ${modelName} na rota V1`);
+
+      // FORÇAMOS a versão V1 explicitamente no segundo argumento.
+      // Isso mata a tentativa automática de usar a 'v1beta' que está dando erro 404.
+      const model = genAI.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
 
       const result = await model.generateContent({
         contents: [{
@@ -96,13 +98,15 @@ export const generateLeadResponse = async (
 
   for (const modelName of STABLE_MODELS) {
     try {
-      console.log(`Gerando análise com modelo: ${modelName}`);
-      const model = genAI.getGenerativeModel({ model: modelName });
+      console.log(`[IA] Gerando análise com modelo: ${modelName} na rota V1`);
+      const model = genAI.getGenerativeModel({ model: modelName }, { apiVersion: 'v1' });
       const result = await model.generateContent(prompt);
       const response = await result.response;
       return response.text();
     } catch (error: any) {
       console.error(`Erro na análise (${modelName}):`, error.message);
+      // Se for erro de quota ou permissão, para o loop. 
+      // Se for 404, o loop continua para o próximo modelo.
       if (error.message?.includes("429") || error.message?.includes("403")) break;
     }
   }
