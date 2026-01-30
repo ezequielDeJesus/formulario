@@ -68,11 +68,12 @@ export const generateLeadResponse = async (
   // DEBUG: Mostrando o erro técnico na tela para o usuário nos mandar o print
   const apiKeyStatus = apiKey ? `Presente (Inicia com: ${apiKey.substring(0, 4)}...)` : "AUSENTE";
   const debugError = errors.join('\n');
+  const buildDate = new Date().toLocaleString('pt-BR');
 
   return `
 # Obrigado pelas respostas!
 
-**Diagnóstico Técnico (DEBUG):**
+**Diagnóstico Técnico (DEBUG - v3 - ${buildDate}):**
 \`\`\`
 Status da Chave API: ${apiKeyStatus}
 Erros por Modelo:
