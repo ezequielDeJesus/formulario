@@ -318,6 +318,11 @@ const PublicFormView: React.FC = () => {
           </button>
         </div>
       </div>
+      <div className="mt-8 text-center animate-pulse">
+        <p className="text-[10px] text-gray-400 dark:text-gray-600 font-mono select-none">
+          Versão: 3.2 (Deploy Confirmado)
+        </p>
+      </div>
     </div>
   );
 };
